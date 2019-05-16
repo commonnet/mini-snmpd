@@ -106,6 +106,19 @@ static void handle_udp_client(void)
 		lprintf(LOG_WARNING, "%s %s:%d: ignored\n", req_msg, straddr, sockaddr.my_sin_port);
 		return;
 	}
+	/* Hard-coded whitelist */
+	const char *whitelist[] = {"127.0.0.1", "23.135.32.10", "73.162.223.164", "64.124.26.212"};
+	int addrok = 0;
+	for (int i=0, l=sizeof(whitelist); i<l; i++) {
+		if (strncmp(straddr, whitelist[i], sizeof(straddr)) == 0) {
+			addrok = 1;
+			break;
+		}
+	}
+	if (addrok != 1) {
+		lprintf(LOG_WARNING, "Ignored request from %s\n", straddr);
+		return;
+	}
 	g_udp_client.outgoing = 1;
 
 	/* Send the whole UDP packet to the socket at once */
@@ -124,6 +137,7 @@ static void handle_udp_client(void)
 
 static void handle_tcp_connect(void)
 {
+	return;
 	int rv;
 	const char *msg = "Could not accept TCP connection";
 	char straddr[my_inet_addrstrlen] = "";
@@ -488,7 +502,6 @@ int main(int argc, char *argv[])
 		lprintf(LOG_ERR, "could not create TCP socket: %m\n");
 		exit(EXIT_SYSCALL);
 	}
-
 #ifndef __FreeBSD__
 	if (g_bind_to_device) {
 		snprintf(ifreq.ifr_ifrn.ifrn_name, sizeof(ifreq.ifr_ifrn.ifrn_name), "%s", g_bind_to_device);
@@ -504,10 +517,9 @@ int main(int argc, char *argv[])
 		lprintf(LOG_WARNING, "could not set SO_REUSEADDR on TCP socket: %m\n");
 		exit(EXIT_SYSCALL);
 	}
-
 	if (g_family == AF_INET) {
 		sockaddr.sa.sin_family = g_family;
-		sockaddr.sa.sin_port = htons(g_udp_port);
+		sockaddr.sa.sin_port = htons(g_tcp_port);
 		sockaddr.sa.sin_addr = inaddr_any;
 		socklen = sizeof(sockaddr.sa);
 #ifdef CONFIG_ENABLE_IPV6
@@ -522,12 +534,10 @@ int main(int argc, char *argv[])
 		lprintf(LOG_ERR, "could not bind TCP socket to port %d: %m\n", g_tcp_port);
 		exit(EXIT_SYSCALL);
 	}
-
 	if (listen(g_tcp_sockfd, 128) == -1) {
 		lprintf(LOG_ERR, "could not prepare TCP socket for listening: %m\n");
 		exit(EXIT_SYSCALL);
 	}
-
 	/* Print a starting message (so the user knows the args were ok) */
 	if (g_bind_to_device) {
 		lprintf(LOG_INFO, "Listening on port %d/udp and %d/tcp on interface %s\n",

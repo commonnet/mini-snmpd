@@ -30,11 +30,11 @@
 #define EXIT_SYSCALL                                    2
 
 #define MAX_NR_CLIENTS                                  16
-#define MAX_NR_OIDS                                     16
-#define MAX_NR_SUBIDS                                   16
-#define MAX_NR_DISKS                                    4
-#define MAX_NR_INTERFACES                               8
-#define MAX_NR_VALUES                                   192
+#define MAX_NR_OIDS                                     20
+#define MAX_NR_SUBIDS                                   20
+#define MAX_NR_DISKS                                    64
+#define MAX_NR_INTERFACES                               64
+#define MAX_NR_VALUES                                   2048
 
 #define MAX_PACKET_SIZE                                 2048
 #define MAX_STRING_SIZE                                 64
@@ -53,6 +53,7 @@
 #define BER_TYPE_COUNTER                                0x41
 #define BER_TYPE_GAUGE                                  0x42
 #define BER_TYPE_TIME_TICKS                             0x43
+#define BER_TYPE_COUNTER64                              0x46
 #define BER_TYPE_NO_SUCH_OBJECT                         0x80
 #define BER_TYPE_NO_SUCH_INSTANCE                       0x81
 #define BER_TYPE_END_OF_MIB_VIEW                        0x82

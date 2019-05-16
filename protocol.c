@@ -74,6 +74,7 @@ static int decode_len(const unsigned char *packet, size_t size, size_t *pos, int
 		case BER_TYPE_OID:
 		case BER_TYPE_SEQUENCE:
 		case BER_TYPE_COUNTER:
+		case BER_TYPE_COUNTER64:
 		case BER_TYPE_GAUGE:
 		case BER_TYPE_TIME_TICKS:
 		case BER_TYPE_NO_SUCH_OBJECT:
