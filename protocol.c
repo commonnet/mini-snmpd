@@ -171,6 +171,24 @@ static int decode_cnt(const unsigned char *packet, size_t size, size_t *pos, siz
 	return 0;
 }
 
+/* Fetch the value as long unsigned integer (copy sign bit into all bytes first) */
+static int decode_cnt64(const unsigned char *packet, size_t size, size_t *pos, size_t len, uint64_t *value)
+{
+	if (*pos >= (size - len + 1)) {
+		lprintf(LOG_DEBUG, "underflow for unsigned\n");
+		errno = EINVAL;
+		return -1;
+	}
+
+	*value = 0;
+	while (len--) {
+		*value = (*value << 8) | packet[*pos];
+		*pos = *pos + 1;
+	}
+
+	return 0;
+}
+
 /* Fetch the value as C string (user must have made sure the length is ok) */
 static int decode_str(const unsigned char *packet, size_t size, size_t *pos, size_t len, char *str, size_t str_len)
 {
@@ -983,6 +1001,7 @@ int snmp_element_as_string(const data_t *data, char *buf, size_t size)
 	int type, val;
 	oid_t oid;
 	unsigned int cnt;
+	long unsigned int cnt64;
 
 	/* Decode the element type and length */
 	if (decode_len(data->buffer, data->encoded_length, &pos, &type, &len) == -1)
@@ -1012,6 +1031,12 @@ int snmp_element_as_string(const data_t *data, char *buf, size_t size)
 			if (decode_cnt(data->buffer, data->encoded_length, &pos, len, &cnt) == -1)
 				return -1;
 			snprintf(buf, size, "%u", cnt);
+			break;
+
+		case BER_TYPE_COUNTER64:
+			if (decode_cnt64(data->buffer, data->encoded_length, &pos, len, &cnt64) == -1)
+				return -1;
+			snprintf(buf, size, "%lu", cnt64);
 			break;
 
 		case BER_TYPE_NO_SUCH_OBJECT:

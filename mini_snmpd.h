@@ -170,7 +170,8 @@ typedef struct field_s {
 	char         *prefix;
 
 	size_t        len;
-	unsigned int *value[12];
+	// 64-bit, yo
+	long long *value[24];
 } field_t;
 
 typedef struct request_s {
@@ -196,20 +197,20 @@ typedef struct loadinfo_s {
 } loadinfo_t;
 
 typedef struct meminfo_s {
-	unsigned int total;
-	unsigned int free;
-	unsigned int shared;
-	unsigned int buffers;
-	unsigned int cached;
+	long long total;
+	long long free;
+	long long shared;
+	long long buffers;
+	long long cached;
 } meminfo_t;
 
 typedef struct cpuinfo_s {
-	unsigned int user;
-	unsigned int nice;
-	unsigned int system;
-	unsigned int idle;
-	unsigned int irqs;
-	unsigned int cntxts;
+	long long user;
+	long long nice;
+	long long system;
+	long long idle;
+	long long irqs;
+	long long cntxts;
 } cpuinfo_t;
 
 typedef struct diskinfo_s {
@@ -221,15 +222,15 @@ typedef struct diskinfo_s {
 } diskinfo_t;
 
 typedef struct netinfo_s {
-	unsigned int status[MAX_NR_INTERFACES];
-	unsigned int rx_bytes[MAX_NR_INTERFACES];
-	unsigned int rx_packets[MAX_NR_INTERFACES];
-	unsigned int rx_errors[MAX_NR_INTERFACES];
-	unsigned int rx_drops[MAX_NR_INTERFACES];
-	unsigned int tx_bytes[MAX_NR_INTERFACES];
-	unsigned int tx_packets[MAX_NR_INTERFACES];
-	unsigned int tx_errors[MAX_NR_INTERFACES];
-	unsigned int tx_drops[MAX_NR_INTERFACES];
+	long long status[MAX_NR_INTERFACES];
+	long long rx_bytes[MAX_NR_INTERFACES];
+	long long rx_packets[MAX_NR_INTERFACES];
+	long long rx_errors[MAX_NR_INTERFACES];
+	long long rx_drops[MAX_NR_INTERFACES];
+	long long tx_bytes[MAX_NR_INTERFACES];
+	long long tx_packets[MAX_NR_INTERFACES];
+	long long tx_errors[MAX_NR_INTERFACES];
+	long long tx_drops[MAX_NR_INTERFACES];
 } netinfo_t;
 
 #ifdef CONFIG_ENABLE_DEMO
